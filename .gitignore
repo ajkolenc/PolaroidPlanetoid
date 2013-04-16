@@ -1,0 +1,13 @@
+#################
+## Unity3D
+#################
+
+.DS_Store
+Library
+Library/*
+*.csproj
+*.sln
+*.userprefs
+Temp
+*.pidb
+Build

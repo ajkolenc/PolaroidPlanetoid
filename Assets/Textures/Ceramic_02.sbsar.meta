@@ -1,0 +1,104 @@
+fileFormatVersion: 2
+guid: fb0c06032d3168b4986b188b4709f2e0
+SubstanceImporter:
+  serializedVersion: 5
+  materialInstances:
+  - serializedVersion: 7
+    name: Ceramic_02
+    prototypeName: Ceramic_02
+    shaderName: Reflective/Bumped Specular
+    inputs:
+    - name: $normalformat
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: OldnDirty
+      value:
+        scalar[0]: .349999994
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    materialInformation:
+      serializedVersion: 5
+      offset: {x: 0, y: 0}
+      scale: {x: 1, y: 1}
+      generateAllOutputs: 1
+      animationUpdateRate: 42
+    materialProperties:
+      serializedVersion: 2
+      texEnvs:
+        data:
+          first:
+            name: _MainTex
+          second:
+            texture: {fileID: 1711757359, guid: fb0c06032d3168b4986b188b4709f2e0,
+              type: 3}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+        data:
+          first:
+            name: _BumpMap
+          second:
+            texture: {fileID: 1243387704, guid: fb0c06032d3168b4986b188b4709f2e0,
+              type: 3}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+        data:
+          first:
+            name: _Cube
+          second:
+            texture: {instanceID: 0}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+      floats:
+        data:
+          first:
+            name: _Shininess
+          second: .078125
+      colors:
+        data:
+          first:
+            name: _Color
+          second: {r: .0131989205, g: .105899066, b: .589552283, a: 1}
+        data:
+          first:
+            name: _SpecColor
+          second: {r: .170917794, g: .667323649, b: .738806009, a: 1}
+        data:
+          first:
+            name: _ReflectColor
+          second: {r: .767431498, g: .970149279, b: .953137994, a: .501960814}
+    textureParameters:
+    - name: 
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: 
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Ceramic_02_Diffuse
+      alphaSource: 5
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Ceramic_02_Normal
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    buildTargetSettings:
+    - serializedVersion: 2
+      buildTarget: 
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 0
+  deletedPrototypes: []
+  userData: 

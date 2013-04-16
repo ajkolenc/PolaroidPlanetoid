@@ -1,0 +1,101 @@
+fileFormatVersion: 2
+guid: 1e90bf057394849469c4866cf70085f6
+SubstanceImporter:
+  serializedVersion: 5
+  materialInstances:
+  - serializedVersion: 7
+    name: brushed metal
+    prototypeName: Brushed_Metal
+    shaderName: Reflective/Bumped Specular
+    inputs:
+    - name: OldnDirty
+      value:
+        scalar[0]: .00999999978
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    materialInformation:
+      serializedVersion: 5
+      offset: {x: 0, y: 0}
+      scale: {x: 1, y: 1}
+      generateAllOutputs: 1
+      animationUpdateRate: 42
+    materialProperties:
+      serializedVersion: 2
+      texEnvs:
+        data:
+          first:
+            name: _MainTex
+          second:
+            texture: {fileID: -1698936817, guid: 1e90bf057394849469c4866cf70085f6,
+              type: 3}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+        data:
+          first:
+            name: _BumpMap
+          second:
+            texture: {instanceID: 0}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+        data:
+          first:
+            name: _Cube
+          second:
+            texture: {instanceID: 0}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+      floats:
+        data:
+          first:
+            name: _Shininess
+          second: .0641845986
+      colors:
+        data:
+          first:
+            name: _Color
+          second: {r: .813432813, g: .813432813, b: .813432813, a: 1}
+        data:
+          first:
+            name: _SpecColor
+          second: {r: .629826307, g: .629594564, b: .634328365, a: 1}
+        data:
+          first:
+            name: _ReflectColor
+          second: {r: .298507452, g: .298507452, b: .298507452, a: .501960814}
+    textureParameters:
+    - name: 
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Brushed_Metal_Diffuse
+      alphaSource: 5
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Brushed_Metal-brown_Diffuse
+      alphaSource: 5
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Brushed_Metal-blue_Diffuse
+      alphaSource: 5
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: brushed metal_Diffuse
+      alphaSource: 5
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    buildTargetSettings:
+    - serializedVersion: 2
+      buildTarget: 
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 0
+  deletedPrototypes: []
+  userData: 

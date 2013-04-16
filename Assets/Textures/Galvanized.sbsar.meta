@@ -1,0 +1,190 @@
+fileFormatVersion: 2
+guid: ef03bc4b4dd1310498d490e4c812f9fa
+SubstanceImporter:
+  serializedVersion: 5
+  materialInstances:
+  - serializedVersion: 7
+    name: Galvanized
+    prototypeName: Galvanized
+    shaderName: Reflective/Bumped Specular
+    inputs:
+    - name: $normalformat
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: OldnDirty
+      value:
+        scalar[0]: .00999999978
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    materialInformation:
+      serializedVersion: 5
+      offset: {x: 0, y: 0}
+      scale: {x: 1, y: 1}
+      generateAllOutputs: 1
+      animationUpdateRate: 42
+    materialProperties:
+      serializedVersion: 2
+      texEnvs:
+        data:
+          first:
+            name: _MainTex
+          second:
+            texture: {fileID: 98573725, guid: ef03bc4b4dd1310498d490e4c812f9fa, type: 3}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+        data:
+          first:
+            name: _BumpMap
+          second:
+            texture: {fileID: -243345342, guid: ef03bc4b4dd1310498d490e4c812f9fa,
+              type: 3}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+        data:
+          first:
+            name: _Cube
+          second:
+            texture: {instanceID: 0}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+      floats:
+        data:
+          first:
+            name: _Shininess
+          second: .135023996
+      colors:
+        data:
+          first:
+            name: _Color
+          second: {r: .805287778, g: .762140751, b: .888059676, a: .20784314}
+        data:
+          first:
+            name: _SpecColor
+          second: {r: .617843628, g: .774590433, b: .962686539, a: 1}
+        data:
+          first:
+            name: _ReflectColor
+          second: {r: .671641827, g: .752009213, b: 1, a: .501960814}
+    textureParameters:
+    - name: Galvanized_Normal
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Galvanized_Diffuse
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    buildTargetSettings:
+    - serializedVersion: 2
+      buildTarget: 
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 1
+  - serializedVersion: 7
+    name: Galvanized_Rusty
+    prototypeName: Galvanized
+    shaderName: Reflective/Bumped Specular
+    inputs:
+    - name: $normalformat
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: OldnDirty
+      value:
+        scalar[0]: .289999992
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    materialInformation:
+      serializedVersion: 5
+      offset: {x: 0, y: 0}
+      scale: {x: 1, y: 1}
+      generateAllOutputs: 1
+      animationUpdateRate: 42
+    materialProperties:
+      serializedVersion: 2
+      texEnvs:
+        data:
+          first:
+            name: _MainTex
+          second:
+            texture: {fileID: 1129171482, guid: ef03bc4b4dd1310498d490e4c812f9fa,
+              type: 3}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+        data:
+          first:
+            name: _BumpMap
+          second:
+            texture: {fileID: 2011940691, guid: ef03bc4b4dd1310498d490e4c812f9fa,
+              type: 3}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+        data:
+          first:
+            name: _Cube
+          second:
+            texture: {instanceID: 0}
+            scale: {x: 1, y: 1}
+            offset: {x: 0, y: 0}
+      floats:
+        data:
+          first:
+            name: _Shininess
+          second: .0237356666
+      colors:
+        data:
+          first:
+            name: _Color
+          second: {r: .164179087, g: .0861079022, b: 0, a: .20784314}
+        data:
+          first:
+            name: _SpecColor
+          second: {r: .828358173, g: .828358173, b: .828358173, a: 1}
+        data:
+          first:
+            name: _ReflectColor
+          second: {r: .186567187, g: .133679584, b: .051514823, a: .501960814}
+    textureParameters:
+    - name: Galvanized_1_Normal
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Galvanized_1_Diffuse
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Galvanized_Rusty_Normal
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Galvanized_Rusty_Diffuse
+      alphaSource: 5
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    buildTargetSettings:
+    - serializedVersion: 2
+      buildTarget: 
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 1
+  deletedPrototypes: []
+  userData: 

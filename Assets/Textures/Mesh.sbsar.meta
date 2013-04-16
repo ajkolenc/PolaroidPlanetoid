@@ -1,0 +1,65 @@
+fileFormatVersion: 2
+guid: f404e952b23cb0943a19230ab81760b0
+SubstanceImporter:
+  serializedVersion: 5
+  materialInstances:
+  - serializedVersion: 7
+    name: Mesh
+    prototypeName: Mesh
+    shaderName: Transparent/Cutout/Diffuse
+    inputs: []
+    materialInformation:
+      serializedVersion: 5
+      offset: {x: 0, y: 0}
+      scale: {x: 20, y: 20}
+      generateAllOutputs: 1
+      animationUpdateRate: 42
+    materialProperties:
+      serializedVersion: 2
+      texEnvs:
+        data:
+          first:
+            name: _MainTex
+          second:
+            texture: {fileID: -267238724, guid: f404e952b23cb0943a19230ab81760b0,
+              type: 3}
+            scale: {x: 20, y: 20}
+            offset: {x: 0, y: 0}
+      floats:
+        data:
+          first:
+            name: _Cutoff
+          second: .5
+        data:
+          first:
+            name: _Shininess
+          second: .078125
+      colors:
+        data:
+          first:
+            name: _Color
+          second: {r: .227222115, g: .895522356, b: .390792131, a: 1}
+        data:
+          first:
+            name: _SpecColor
+          second: {r: .5, g: .5, b: .5, a: 1}
+    textureParameters:
+    - name: 
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Mesh_Diffuse
+      alphaSource: 5
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    buildTargetSettings:
+    - serializedVersion: 2
+      buildTarget: 
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 0
+  deletedPrototypes: []
+  userData: 

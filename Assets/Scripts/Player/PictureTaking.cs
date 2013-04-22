@@ -126,7 +126,9 @@ public class PictureTaking : MonoBehaviour {
 		
 		bool theresANewCreatureInThere=false;
 		
-		foreach(RaycastHit hitt in hits){			
+		foreach(RaycastHit hitt in hits){
+			
+			
 			
 			Debug.Log("Hit name: "+hitt.transform.name);
 			if(hitt.collider.tag=="Creature"){
@@ -151,6 +153,7 @@ public class PictureTaking : MonoBehaviour {
 				
 				//If it has Basic Creature attached, it's a for real creature and not just a limb or something
 				if(bc!=null){
+					
 					if(!creaturesInPic.Contains(bc)){						
 						//Calculate light value (first see if we've got a flashlight on)
 						float lightVal = 0.0f;
@@ -238,6 +241,10 @@ public class PictureTaking : MonoBehaviour {
 						//If they weren't off screen
 						if(centeredVal!=0){
 							creaturesInPic.Add(bc);
+							for (int i = 0; i < bc.gameObject.transform.childCount; i++){
+								print (bc.gameObject.transform.childCount);
+								DataHolder.compass.RemoveCreature(bc.gameObject.transform.GetChild(i));
+							}
 							criteria.Add(tempCriteria);
 						}
 						else{

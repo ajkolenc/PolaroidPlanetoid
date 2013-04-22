@@ -19,7 +19,7 @@ public class CreatureController : BasicCreature {
 	
 	//How much energy this creature has (out of 1)
 	//Energy is used to determine if we need to eat or sleep more
-	private float energy=3000;
+	public float energy=3000;
 	//The maxEnergy of the thing, set in start
 	public float maxEnergy;
 	//Point at which the creature will need to sleep
@@ -55,13 +55,23 @@ public class CreatureController : BasicCreature {
 	public GameObject target;
 	private CreatureAction currentAction;
 	
+	//Dance handler
+	public DanceHandler danceHandler;
+	
+	
+	//Creature sound stuff
+	public AudioClip randomCreatureSound; 
+	public float timeBetweenSounds=5.0f; 
+	private float soundTimer;
+	
+	
 	//Virtual so it can be overridden in later creatures for specific behaviors
 	public virtual void Start() {
 		memories = new Dictionary<GameObject,float>();
 		behaviors = new Dictionary<string, CreatureAction>();
 		homeLocation = transform.position;
 		
-		maxEnergy = energy;
+		energy = maxEnergy;
 		behaviors.Add("Bull", new CreatureAction(RUNNINGAWAY, 0.2f, RunningAway));
 		behaviors.Add("First Person Controller", new CreatureAction(RUNNINGAWAY, 0.5f, RunningAway));
 		behaviors.Add(name, new CreatureAction(STANDING, 0.1f, HangOutWith));
@@ -71,115 +81,135 @@ public class CreatureController : BasicCreature {
 	
 	// Update is called once per frame
 	void Update () {
-		//Current state is not equal to sleeping
-		if(currentAction ==null || currentAction.actionStrategy!=SLEEPING){
-			//If we're purposeless
-			if(goal.magnitude==0 && target==null){
-				checkTheOutsideWorld(2.0f);
-				
-				
+		//Random sound player
+		if(soundTimer<timeBetweenSounds){
+			soundTimer+=Time.deltaTime*Random.Range(0.5f,1.5f);
+		}
+		else{
+			soundTimer=0;
+			if(randomCreatureSound!=null){
+				audio.PlayOneShot(randomCreatureSound);
 			}
-			//The usual dude moving around stuff
-			else if(target==gameObject){
-				//If we've got a good amount of energy, just go some place if active type, otherwise, just wait	
-				if(energy>sleepEnergyPoint && goal.magnitude==0){
-					goal = homeLocation + new Vector3(Random.Range(-wanderAmount, wanderAmount), 0, Random.Range(-wanderAmount, wanderAmount));
-				}
-				else if(energy<=sleepEnergyPoint && currentAction.actionStrategy!=SLEEPING){
-					//GO TO SLEEP
-					setUpSleep();
-				}
-				
-				//Move to goal
-				//print("MOVING"):
-				if(movementController.MoveTowards(goal, 1.0f)){
-					goal = Vector3.zero;
-				}
-				else if(movementController.stuck){
-					movementController.stuck=false;
-					goal = Vector3.zero;
-				}
-				else{
-					//Drain energy as you move
-					energy-=Time.deltaTime;
-				}
-			}
-			//We've got an actual target, let's go for it
-			else{
-				
-				currentAction.act(target);
-			}
-			
-			
-			
-			
-			if(checkAuraTimer<howOftenToCheckAura){
-				checkAuraTimer+=Time.deltaTime;
-			}
-			else{
-				checkTheOutsideWorld(1.0f);
-				checkAuraTimer=0.0f;
-			}
-			
-			List<GameObject> keys = new List<GameObject>(memories.Keys);
-			
-			//Go through our memories to determine if we should "forget" anything
-			foreach(GameObject memory in keys){
-				
-				memories[memory]-=Time.deltaTime;
-				
-				//We don't remember it anymore
-				if(memories[memory]<0){
-					memories.Remove(memory);
+		}
+		
+		
+		if(happiness>=100){
+			if(danceHandler!=null){
+				if(danceHandler.Dance()){
+					print("Am I done dancing? "+name);
 					
-					if(memory==target){
-						target=null;
-						goal= Vector3.zero;
-					}
+					happiness = 50.0f;
 				}
+			}
+			else{
+				happiness = 50.0f;
 			}
 		}
 		else{
-			Debug.Log("SLEEPING");
-			movementController.StopAnimations();
-			
-			//Sleep Handler
-			
-			if(sleepHandler.Sleeping()){
-				//Fully rested!
-				energy=maxEnergy;
-				currentAction = new CreatureAction(RUNNINGAWAY, 0);
-				target=null;
-				goal=Vector3.zero;
-				print("I'm done sleeping!");
+			//Current state is not equal to sleeping
+			if(currentAction ==null || currentAction.actionStrategy!=SLEEPING){
 				
-			}
-			
-			
-			if(checkAuraTimer<howOftenToCheckAura){
-				checkAuraTimer+=Time.deltaTime;
+				//If we're purposeless
+				if(goal.magnitude==0 && target==null){
+					checkTheOutsideWorld(2.0f);
+					
+					
+				}
+				//The usual dude moving around stuff
+				else if(target==gameObject){
+					//If we've got a good amount of energy, just go some place if active type, otherwise, just wait	
+					if(energy>sleepEnergyPoint && goal.magnitude==0 && (currentAction==null || currentAction.actionStrategy!=SLEEPING )){
+						goal = homeLocation + new Vector3(Random.Range(-wanderAmount, wanderAmount), 0, Random.Range(-wanderAmount, wanderAmount));
+					}
+					else if(energy<=sleepEnergyPoint && (currentAction==null || currentAction.actionStrategy!=SLEEPING)){
+						//GO TO SLEEP
+						//Debug.Log("Setting up sleep");
+						setUpSleep();
+					}
+					
+					//Move to goal
+					//print("MOVING"):
+					
+					if(movementController.MoveTowards(goal, 1.0f)){
+						goal = Vector3.zero;
+					}
+					else if(movementController.stuck){
+						movementController.stuck=false;
+						goal = Vector3.zero;
+					}
+					else{
+						//Drain energy as you move
+						energy-=Time.deltaTime;
+					}
+					
+				}
+				//We've got an actual target, let's go for it
+				else{
+					
+					currentAction.act(target);
+				}
+				
+				
+				
+				
+				if(checkAuraTimer<howOftenToCheckAura){
+					checkAuraTimer+=Time.deltaTime;
+				}
+				else{
+					checkTheOutsideWorld(1.0f);
+					checkAuraTimer=0.0f;
+				}
+				
+				List<GameObject> keys = new List<GameObject>(memories.Keys);
+				
+				//Go through our memories to determine if we should "forget" anything
+				foreach(GameObject memory in keys){
+					
+					memories[memory]-=Time.deltaTime;
+					
+					//We don't remember it anymore
+					if(memories[memory]<0){
+						memories.Remove(memory);
+						
+						if(memory==target){
+							target=null;
+							goal= Vector3.zero;
+						}
+					}
+				}
 			}
 			else{
-				//Check the outside world, but in a way reduced capacity
-				checkTheOutsideWorld(0.1f);
-				checkAuraTimer=0.0f;
-			}
-			
-			
-			
-			
-			//Just remember the stuff you were remembering anyway before you went to sleep
-		}
-		
-		/**
-		//Don't get stuck in other people: 
-		GameObject[] creatures = GameObject.FindGameObjectsWithTag("Creature");
-		foreach(GameObject creature in creatures){
-				if(creature != gameObject && creature.transform.position==transform.position){
-					movementController.MoveTowards(homeLocation,0.1f);
+				//Debug.Log("SLEEPING");
+				//movementController.StopAnimations();
+				
+				//Sleep Handler
+				
+				if(sleepHandler.Sleeping()){
+					//Fully rested!
+					energy=maxEnergy;
+					currentAction = new CreatureAction(RUNNINGAWAY, 0);
+					target=null;
+					goal=Vector3.zero;
+					print("I'm done sleeping!");
+					
 				}
+				
+				/**
+				if(checkAuraTimer<howOftenToCheckAura){
+					checkAuraTimer+=Time.deltaTime;
+				}
+				else{
+					//Check the outside world, but in a way reduced capacity
+					checkTheOutsideWorld(0.1f);
+					checkAuraTimer=0.0f;
+				}
+				*/
+				
+				
+				
+				//Just remember the stuff you were remembering anyway before you went to sleep
+			}
 		}
-		*/
 	}
 	
 	//Running Away (This thing could be located anywhere)
@@ -324,6 +354,7 @@ public class CreatureController : BasicCreature {
 					}
 				}
 				else if(eatingHandler.GoBackToNormal()){
+					happiness+=10;
 					Destroy(food);
 					currentAction.genericVariable=0.0f;
 					energy+=500;
@@ -416,7 +447,7 @@ public class CreatureController : BasicCreature {
 	
 	//Setting up entering into sleeping
 	private void setUpSleep(){
-		print("Setting up sleeping");
+		//print("Setting up sleeping");
 		movementController.StopAnimations();
 		currentAction = new CreatureAction(SLEEPING, 0.2f);
 		currentState = SLEEPING;

@@ -14,7 +14,7 @@ public class BasicCreature : MonoBehaviour {
 	
 	//How happy this creature is (out of 1)
 	//Happiness is used to determine if this creature will dance or not
-	private float happiness=50;
+	public float happiness=50;
 	
 	
 	/**

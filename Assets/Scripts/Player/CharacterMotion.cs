@@ -25,6 +25,11 @@ public class CharacterMotion : MonoBehaviour {
 	
 	public string[] tagsNotToGoTo = {"Water"};
 	
+	public AudioSource effect;
+	public AudioClip jump, walking, running;
+	
+	
+	
 	
 	// Update is called once per frame
 	void Update () {
@@ -73,6 +78,9 @@ public class CharacterMotion : MonoBehaviour {
 			verticalMvmt-=Gravity();
 		}
 		
+		
+		
+		
 		Vector3 verticalPos = transform.position+verticalMvmt;
 		
 		
@@ -96,6 +104,10 @@ public class CharacterMotion : MonoBehaviour {
 		//JUMPING
 		//JUMPING
 		if(Input.GetAxis("Jump")>0 && jumpTimer<=0.0f && !jumping ){
+			//Jump sound
+			effect.audio.PlayOneShot(jump);
+			
+			
 			
 			//print("Getting here");
 			//prevMovementState=currMovementState;
@@ -115,50 +127,28 @@ public class CharacterMotion : MonoBehaviour {
 		if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) && currMovementState==MovementState.NORMAL){
 			if(currMovementState!=MovementState.SPRINTING){
 				prevMovementState=currMovementState;
+				
+				audio.clip=running;
 			}
 			currMovementState=MovementState.SPRINTING;
+			
 			
 		}
 		else{
 			if(currMovementState==MovementState.SPRINTING){
+				audio.clip=walking;
 				currMovementState=prevMovementState;
 			}
 			
 		}
 		
-		//Crouching
-		if(Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.LeftControl)){
-			float crouchAmount = 1.0f;
-			
-			if(currMovementState==MovementState.NORMAL){
-				prevMovementState=currMovementState;
-				currMovementState=MovementState.CROUCHING;
-				transferring=true;
-				
-				//lower height slightly
-				transferHeight = transform.position.y;
-				transferHeight-=crouchAmount;
-				
-				
-				//Change the size so you don't slip through the ground
-				
-			}
-			else if(currMovementState==MovementState.CROUCHING){
-				prevMovementState=currMovementState;
-				currMovementState=MovementState.NORMAL;
-				transferring=true;
-				
-				//raise height slightly
-				transferHeight = transform.position.y;
-				transferHeight+=crouchAmount;
-				
-			}
-		}
+		
 	}
 	
 	//For switching to camera from CameraControl
 	public void Cameraing(){
-		currMovementState=MovementState.CAMERAING;
+		//Debug.Log("Ever get into cameraing");
+		//currMovementState=MovementState.CAMERAING;
 	}
 	
 	//For switching out of camera from CameraControl
@@ -179,7 +169,7 @@ public class CharacterMotion : MonoBehaviour {
 				moveYourself(0.1f);
 			}
 			else if(currMovementState==MovementState.CAMERAING){
-				moveYourself(0.3f);
+				moveYourself(0.2f);
 			}
 			else if(currMovementState==MovementState.SPRINTING){
 				moveYourself(1.75f);
@@ -189,18 +179,19 @@ public class CharacterMotion : MonoBehaviour {
 	
 	//Handles jumping and gravity while in the air
 	public Vector3 JumpHandler(){
+		
 		return new Vector3(0,jumpSpeed*Time.deltaTime,0);
 		
 	}
 	
 	//Returns Gravity
 	public Vector3 Gravity(){
-		if(gravitySpeed<1.0f){
-			gravitySpeed+=Time.deltaTime/3;
+		if(gravitySpeed<20.0f){
+			gravitySpeed+=Time.deltaTime*20.0f;
 		}
-		//print("Gravity Speed: "+gravitySpeed);
+		//Debug.Log("Gravity Speed: "+gravitySpeed*Time.deltaTime +". At time: "+Time.time);
 		
-		return new Vector3(0,gravitySpeed,0);
+		return new Vector3(0,gravitySpeed*Time.deltaTime,0);
 		
 	}
 	
@@ -211,6 +202,9 @@ public class CharacterMotion : MonoBehaviour {
 		
 			//Square magnitude is cheaper for checking if Input was pressed at all
 			if(movement.sqrMagnitude!=0){
+			
+			
+			
 				Vector3 currFacing = new Vector3(directionIndicator.transform.position.x,transform.position.y,directionIndicator.transform.position.z);
 			
 				Vector3 differenceVector = currFacing-transform.position;
@@ -246,10 +240,26 @@ public class CharacterMotion : MonoBehaviour {
 							}
 						
 							if(canGoThere){
+							
+								if(!audio.isPlaying && !jumping){
+									audio.Play();
+								}
+							else if(jumping){
+								audio.Stop();
+							}
 								transform.position=newPos;
+							}
+							else{
+								audio.Stop();
 							}
 						}
 						else{
+							if(!audio.isPlaying && !jumping){
+									audio.Play();
+								}
+							else if(jumping){
+								audio.Stop();
+							}
 							transform.position=newPos;
 						}
 					
@@ -269,42 +279,67 @@ public class CharacterMotion : MonoBehaviour {
 							}
 						
 							if(canGoThere){
+							
+								if(!audio.isPlaying && !jumping){
+									audio.Play();
+								}
+								else if(jumping){
+									audio.Stop();
+								}
+							
 								transform.position=newPos;
+							}
+							else{
+								audio.Stop();
 							}
 						}
 						else{
+					
+							if(!audio.isPlaying && !jumping){
+									audio.Play();
+								}
+							else if(jumping){
+								audio.Stop();
+							}
+					
 							transform.position=newPos;
 						}
 				}
 			}
+		else{
+			//Can't go there
+			audio.Stop();
+		}
 	}
 	
 	void CheckGrounded(){
 		
-		float distance = transform.localScale.y/2;
+		float distance = transform.localScale.y;
 		if(currMovementState == MovementState.CROUCHING){
 			distance=0.1f;
 			
 		}
 		
-		RaycastHit hit;
-			if(Physics.Raycast(transform.position,Vector3.down,out hit,distance)
-			|| Physics.Raycast(transform.position,Vector3.down,out hit,distance*0.5f)
-			|| Physics.Raycast(transform.position,Vector3.down,out hit,distance*1.5f)){
+		RaycastHit hit, hit2, hit3;
+			if(Physics.SphereCast(transform.position, 1.0f ,Vector3.down,out hit,distance)
+			|| Physics.Raycast(transform.position,Vector3.down,out hit2,distance*0.5f)
+			|| Physics.Raycast(transform.position,Vector3.down,out hit3,distance*0.3f)){
 			
 				//print("Name of hit: "+hit.collider.name);
 				//GROUNDED
 				
 					
-					groundedCheck=0;
+					
 					gravitySpeed=0.0f;
 			
-					if(jumpTimer<0.1){
+					if(jumpTimer<0.1 && currMovementState==MovementState.JUMPING){	
+						doGravity=true;
 						jumping=false;
 						jumpTimer=0.0f;
-				
+						
 						if(currMovementState==MovementState.JUMPING){
-						currMovementState=MovementState.NORMAL;
+							groundedCheck=0;
+							currMovementState=MovementState.NORMAL;
 						}
 				
 						if(hit.distance<distance){
@@ -312,9 +347,16 @@ public class CharacterMotion : MonoBehaviour {
 						}
 					}
 			
-			
-					if(hit.collider.gameObject!=belowObj){
+					if(hit.collider!=null && hit.collider.gameObject!=belowObj){
 						belowObj = hit.collider.gameObject;
+						prevPosBelow=belowObj.transform.position;
+					}
+					else if(hit2.collider!=null && hit2.collider.gameObject!=belowObj){
+						belowObj = hit2.collider.gameObject;
+						prevPosBelow=belowObj.transform.position;
+					}
+					else if(hit3.collider!=null && hit3.collider.gameObject!=belowObj){
+						belowObj = hit3.collider.gameObject;
 						prevPosBelow=belowObj.transform.position;
 					}
 					
@@ -325,7 +367,9 @@ public class CharacterMotion : MonoBehaviour {
 			}
 			else{
 				//Nothing below you, drop it
-				if(Physics.Raycast(transform.position,Vector3.down,out hit,distance*2)){
+				if(Physics.Raycast(transform.position,Vector3.down,out hit,distance*2) //||
+				//Physics.Raycast(transform.position,Vector3.down,out hit2,distance*0.5f)
+				){
 					if(hit.collider.gameObject!=belowObj){
 						belowObj=null;
 					}

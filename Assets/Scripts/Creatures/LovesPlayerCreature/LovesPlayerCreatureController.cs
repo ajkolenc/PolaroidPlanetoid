@@ -17,7 +17,7 @@ public class LovesPlayerCreatureController : CreatureController {
 		Vector3 differenceToTarget = target.transform.position-transform.position;
 		float distance =differenceToTarget.magnitude;
 		
-		
+		happiness+=Time.deltaTime*20;
 		
 		
 		

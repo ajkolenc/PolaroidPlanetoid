@@ -35,7 +35,10 @@ public class DayNightCycle : MonoBehaviour {
 	public static void ToReview(){
 		PictureTaking picture = GameObject.FindGameObjectWithTag("MainCamera").GetComponentInChildren<PictureTaking>();
 		DataHolder.AddPictures(picture.textures, picture.pictures);
-		picture.StartCoroutine(TransitionGUI.SwitchLevel("review"));		
+		if (picture.textures == null || picture.textures.Count == 0)
+			picture.StartCoroutine(TransitionGUI.SwitchLevel("spaceship"));		
+		else
+			picture.StartCoroutine(TransitionGUI.SwitchLevel("review"));		
 	}
 	
 	void Update(){

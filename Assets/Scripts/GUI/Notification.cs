@@ -13,17 +13,21 @@ public class Notification : GUIScreen {
 	public Dictionary<string, buttonAction> buttons, nextButtons;
 	public bool comeIn = false;
 	public bool inSpaceShip = false;
-	bool typing = false;
+	public bool isSal = true;
+	public bool typing = false;
 	static Notification notifier = null;
 	int width = 600;
 	int height = 150;
 	int buttonHeight = 30;
 	int buttonWidth = 50;
-	GUIStyle header, boxStyle;
+	GUIStyle header, boxStyle, nameStyle;
 	Timer timeout;
+	float typeTime;
 	float timeoutTime = 0;
 	Rect windowBounds;
 	Texture2D greyPic;
+	bool word = false;
+	bool underscoring = false;
 	Sprite test;
 	SpriteAnimation spriteAnimation;
 	
@@ -37,6 +41,11 @@ public class Notification : GUIScreen {
 		header.alignment = TextAnchor.MiddleLeft;
 		boxStyle = new GUIStyle(skin.box);
 		buttons = new Dictionary<string, buttonAction>();
+		nameStyle = new GUIStyle();
+		nameStyle.fontSize = 18;
+		nameStyle.normal.textColor = Color.white;
+		nameStyle.alignment = TextAnchor.MiddleCenter;
+		
 		if (bigNotification){
 			header.fontSize = 32;
 			width = 1000;
@@ -54,8 +63,13 @@ public class Notification : GUIScreen {
 			windowBounds = new Rect(targetWidth/2f - 70, 80, 585, 200);	
 		}
 		localBounds = windowBounds;
-		test = new Sprite("sal2", 146, 128);
+		if (isSal){
+			test = new Sprite("sal3", 170, 128);
+		}
+		else
+			test = new Sprite("cy3", 169, 128);
 		spriteAnimation = test.animations[0];
+		spriteAnimation.repeat = true;
 		if (comeIn)
 			StartCoroutine(CoStart());
 	}
@@ -67,21 +81,31 @@ public class Notification : GUIScreen {
 	}
 	
 	public IEnumerator TypeInContent(float time = 0.06f){
-		StartCoroutine(AddUnderscore());
+		typeTime = time;
 		typing = true;
-		int i = 0;
+		int i = 1;
 		bool ending = true;
-		while (i < content.Length){
-			displayedContent = displayedContent.Substring(0, i);
-			displayedContent += content[i];
-			if (content[i] == ' ' || content[i] == ',')
-				yield return new WaitForSeconds(2*time);	
-			else if (content[i] == '.' || content[i] == '!')
-				yield return new WaitForSeconds(8*time);	
+		if (!underscoring){
+			StartCoroutine(AddUnderscore());
+			underscoring = true;
+		}
+		while (i <= content.Length){
+			word = true;
+			displayedContent = content.Substring(0, i);
+			if (content[i-1] == ' ' || content[i-1] == ','){
+				word = false;
+				yield return new WaitForSeconds(2*typeTime);
+			}
+			else if (content[i-1] == '.' || content[i-1] == '!'){
+				word = false;
+				yield return new WaitForSeconds(8*typeTime);
+			}
 			else
-				yield return new WaitForSeconds(time);	
+				yield return new WaitForSeconds(typeTime);	
 			i++;
 		}
+		word = false;
+		spriteAnimation.StopAnimation();
 		typing = false;
 	}
 	
@@ -127,10 +151,22 @@ public class Notification : GUIScreen {
 	
 	protected override void DrawGUI (){
 		GUILayout.BeginHorizontal(boxStyle, GUILayout.Width(width), GUILayout.Height(height));
-		GUILayout.Space(10);
-		GUILayout.Label(spriteAnimation.PlayAnimation(.1f), GUILayout.Width(150), GUILayout.Height(height));
-		GUILayout.Space(10);
-		GUILayout.Label(displayedContent+underscore, header, GUILayout.Width(width-40-150), GUILayout.Height(height));
+		GUILayout.Space(180);
+		if (word){
+			spriteAnimation.Continue();
+			spriteAnimation.repeat = true;	
+		}
+		else{
+			spriteAnimation.SetFrame(0);
+		}
+		GUI.DrawTexture(new Rect(15, 15, 150, height-50), spriteAnimation.PlayAnimation(.1f));
+		if (isSal){
+			GUI.Label(new Rect(15, height - 40, 150, 30), "Sal", nameStyle); 
+		}
+		else {
+			GUI.Label(new Rect(15, height - 40, 150, 30), "Cy", nameStyle); 
+		}
+		GUILayout.Label(displayedContent+underscore, header, GUILayout.Width(width-15-180), GUILayout.Height(height));
 		GUILayout.Space(20);
 		GUILayout.EndHorizontal();
 		
@@ -174,6 +210,14 @@ public class Notification : GUIScreen {
 	}
 	
 	void Update(){
+		if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.Space)){
+			if (typing){
+				typeTime = 0.01f;
+			}
+		}
+		else{
+			typeTime = 0.06f;	
+		}
 	}
 	
 	public IEnumerator Close(){

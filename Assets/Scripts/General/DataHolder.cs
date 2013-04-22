@@ -12,12 +12,15 @@ public class DataHolder : MonoBehaviour {
 	public static List<string> powerUps, previousPowerUps;
 	public static Dictionary<string, Dictionary<string, GUIContent>> creatureInfo;
 	public static bool tutorial = true;
+	public static Texture2D newspicture;
+	public static CreatureCompass compass;
 		
 	void Awake(){
 		if (created)
 			Destroy(this);
 		else{
 			PlayerPrefs.DeleteAll();
+			DataHolder.compass = GameObject.Find("Main Camera").GetComponentInChildren<CreatureCompass>();
 			DataHolder.created = true;
 			DataHolder.powerUps = new List<string>();
 			DataHolder.previousPowerUps = new List<string>();

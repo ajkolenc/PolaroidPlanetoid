@@ -68,6 +68,9 @@ public class ObjectHolder : MonoBehaviour {
 						}	
 					}
 					else{
+					
+						
+					
 						hand.enabled=false;
 					}
 				

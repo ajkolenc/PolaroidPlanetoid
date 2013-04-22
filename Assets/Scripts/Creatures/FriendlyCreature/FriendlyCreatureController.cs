@@ -9,7 +9,7 @@ public class FriendlyCreatureController : CreatureController {
 		behaviors = new Dictionary<string, CreatureAction>();
 		homeLocation = transform.position;
 		
-		maxEnergy = 10000;
+		energy=maxEnergy;
 		behaviors.Add("Rabbit", new CreatureAction(STANDING, 0.1f, FriendlyHangOutWith));
 	}
 	
@@ -32,7 +32,8 @@ public class FriendlyCreatureController : CreatureController {
 			movementController.TurnToFace(buddy.transform.position);
 			//print("HANGING");
 			
-			
+			//Happy when hanging
+			happiness +=10*Time.deltaTime;
 			
 			
 			

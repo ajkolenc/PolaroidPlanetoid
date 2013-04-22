@@ -21,6 +21,8 @@ public abstract class GUIScreen : MonoBehaviour {
 	protected static Texture2D letterBox;
 	protected Rect localBounds = new Rect(0,0,targetWidth, targetHeight);
 	protected Rect movingBounds = new Rect(0,0,targetWidth,targetHeight);
+	protected Vector2 screenCenter = new Vector2(Screen.width/2f, Screen.height/2f);
+	float spinAngle;
 	Color guiColor;
 	public GUISkin skin;
 
@@ -76,9 +78,10 @@ public abstract class GUIScreen : MonoBehaviour {
 		if (displayed){
 			GUI.skin = skin;
 			GUI.depth = depth;
-			GUI.matrix = screenTransform;
-			GUI.color = guiColor;
 			screenTransform = Matrix4x4.TRS(new Vector3(movingTransform.x * resolutionTransform.x, movingTransform.y * resolutionTransform.y, 1f), rotatingTransform, new Vector3(scalingTransform.x * wrappingTransform.x * resolutionTransform.x, scalingTransform.y * wrappingTransform.y * resolutionTransform.y, 1f));
+			GUI.matrix = screenTransform;
+			GUIUtility.RotateAroundPivot(spinAngle, screenCenter);
+			GUI.color = guiColor;
 			GUI.BeginGroup(GUIScreen.screenBounds);
 			GUI.BeginGroup(localBounds);
 			GUI.BeginGroup(movingBounds);
@@ -99,6 +102,26 @@ public abstract class GUIScreen : MonoBehaviour {
 	
 	public void Persist(bool persist){
 		this.persist = persist;
+	}
+	
+	public IEnumerator SpinIn(float transitionTime = 2f){
+		Timer transitionTimer = new Timer(transitionTime);
+		displayed = true;
+		float scale;
+		float totalDegrees = 720f;
+		
+		while (!transitionTimer.IsFinished()){
+			scale = transitionTimer.Percent();
+			spinAngle = (1-scale)*totalDegrees;
+			scalingTransform = new Vector3(scale, scale, 1f);
+			movingTransform = new Vector3((1-scale)*targetWidth/2f, (1-scale)*targetHeight/2f, 0f);
+//			screenCenter = Vector2.zero;
+//			screenCenter = new Vector2((2-scale)*Screen.width/2f, (2-scale)*Screen.height/2f);
+			yield return 0;
+		}
+		spinAngle = totalDegrees;
+		movingTransform = Vector3.zero;
+		scalingTransform = new Vector3(1f, 1f, 1f);		
 	}
 	
 	public IEnumerator FadeIn(float transitionTime = .3f){

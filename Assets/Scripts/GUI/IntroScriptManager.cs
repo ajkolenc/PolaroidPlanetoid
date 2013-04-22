@@ -20,11 +20,12 @@ public class IntroScriptManager : MonoBehaviour {
 		yield return new WaitForSeconds(1f);
 		n = gameObject.AddComponent<Notification>();
 		n.skin = skin;
+		n.isSal = false;
 		yield return StartCoroutine(n.FadeIn(.5f));
-		yield return StartCoroutine(SpeakLine("Welcome to Noterra! Cy Borg’s the name, picture taking’s the game. You can call me Cy."));
-		yield return StartCoroutine(SpeakLine("Let’s get straight to the good stuff, sport! Here’s a brand-new camera. Go out and explore and use it to take pictures of the creatures you see."));
-		yield return StartCoroutine(SpeakLine("You’ll earn reputation for the good pictures you take. If you managed to get promoted, I’ll get you some great items for your camera. What do I mean by “a good picture”? Well, that’s up to you to find out!"));
-		StartCoroutine(SpeakLine("Just warning you, I’m one picky robot! Now, get out there and make me proud! See you at night-time. Good luck!"));
+		yield return StartCoroutine(SpeakLine("Welcome to Notterra! Cy Borg's the name, picture taking's the game."));
+		yield return StartCoroutine(SpeakLine("Alright sport, here's a brand-new camera. Go out and explore and use it to take pictures of the creatures you see."));
+		yield return StartCoroutine(SpeakLine("You'll earn reputation for the good pictures you take. If you get promoted, I'll get you some great items for your camera. What do I mean by \"a good picture\"? Well, that's up to me to decide!"));
+		StartCoroutine(SpeakLine("Just warning you, I'm one picky robot! Good luck!"));
 		yield return new WaitForSeconds(3f);
 		ship.animation.Play("FlyToPlanet");
 		yield return new WaitForSeconds(6f);

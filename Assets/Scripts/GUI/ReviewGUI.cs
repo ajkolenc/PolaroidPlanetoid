@@ -79,6 +79,7 @@ public class ReviewGUI : GUIScreen {
 					
 					float score = 0;
 					// New Creature Bonus
+					DataHolder.creatureScores["Bonus"][0] = DataHolder.creatureScores["Bonus"][0] + 10;
 					if (PlayerPrefs.GetInt(creature) != 143){
 						PlayerPrefs.SetInt(creature,143);
 						DataHolder.creatureScores["Bonus"][0] = DataHolder.creatureScores["Bonus"][0] + 1000;
@@ -90,8 +91,12 @@ public class ReviewGUI : GUIScreen {
 					
 					// Score the picture
 					score = criteria["light"] * criteria["facing"] * criteria["center"] * criteria["rareness"] * (criteria["distance"] + criteria["behavior"]);
-					if (score > highestScore)
+					if (score > highestScore){
+						if (newCreaturePopup){
+							DataHolder.newspicture = pics[j];	
+						}
 						highestScore = score;
+					}
 					
 					// Check if there is a picture for this behavior of this creature
 					if ((DataHolder.creatureScores[creature].ContainsKey(criteria["behavior"]))){
@@ -108,7 +113,6 @@ public class ReviewGUI : GUIScreen {
 			picScores.Add(highestScore);
 			picDescriptions.Add(GetDescription(p, highestScore));
 			j++;
-			
 		}
 		
 		if (newCreaturePopup){
@@ -166,7 +170,7 @@ public class ReviewGUI : GUIScreen {
 		
 		//Leave Button
 		if (GUI.Button(new Rect(targetWidth/2f - 200, 900, 400, 100),"Done")){
-			StartCoroutine(TransitionGUI.SwitchLevel("spaceship"));	
+			StartCoroutine(TransitionGUI.SwitchLevel("newspaper"));	
 		}
 	}
 	
@@ -231,29 +235,71 @@ public class ReviewGUI : GUIScreen {
 	string GetDescription(PictureData p, float score){
 		List<string> goodDescriptions = new List<string>();
 		goodDescriptions.Add("This picture is spot-on!");
-		goodDescriptions.Add("This picture is very clear! Feels like I’m right there in the action!");
+		goodDescriptions.Add("This picture is very clear! Feels like I'm right there in the action!");
 		goodDescriptions.Add("Excellent photo, very well positioned.");
-
+		
 		List<string> badDescriptions = new List<string>();
-		badDescriptions.Add("I can’t see the creature very well in this one.");
+		badDescriptions.Add("I can't see the creature very well in this one.");
 		badDescriptions.Add("I don't think this will work well for us.");
 		badDescriptions.Add("Try to get a better position.");
 		
+		List<string> goodCentering = new List<string>();
+		goodCentering.Add("Very well-centered photo!");
+		goodCentering.Add("The framing on this picture is excellent");		
+		
+		List<string> badCentering = new List<string>();
+		badCentering.Add("The creature isn't framed well in this photo.");
+		badCentering.Add("This picture is too off-center.");
+		
+		List<string> goodFacing = new List<string>();
+		goodFacing.Add("Nice, it's looking right at us!");
+		goodFacing.Add("You captured the creature's face really well in this picture.");
+		
+		List<string> badFacing = new List<string>();
+		badFacing.Add("The creature's back is turned!");
+		badFacing.Add("Try to get the creature from a better angle.");
+		
+		List<string> goodRareness = new List<string>();
+		goodRareness.Add("Nice, that creature is really rare!");
+		goodRareness.Add("Great, that looks like a special creature.");		
+		
+		List<string> badRareness = new List<string>();
+		badRareness.Add("Aren't there a lot of these creatures?");
+		badRareness.Add("I think I've seen this creature before.");
+		
 		List<string> noCreature = new List<string>();
-		noCreature.Add("Pretty background, but there’s no creature here!");
+		noCreature.Add("Pretty background, but there's no creature here!");
 		noCreature.Add("The scenery is nice, but we really need pictures of creatures.");
 		noCreature.Add("There's no creature in this picture!");
 		
-		string descript;
-		
+		List<string> possibleDescriptions = new List<string>();
+		if (p.namesOfCreatures.Count > 0){
+			if (p.scoringCriteria[0]["facing"] > 1f)
+				possibleDescriptions.AddRange(goodFacing);
+			else if (p.scoringCriteria[0]["facing"] < .6f)
+				possibleDescriptions.AddRange(badFacing);
+			
+			if (p.scoringCriteria[0]["rareness"] > 1.5f)
+				possibleDescriptions.AddRange(goodRareness);
+			else if (p.scoringCriteria[0]["rareness"] < .6f)
+				possibleDescriptions.AddRange(badRareness);
+			
+			if (p.scoringCriteria[0]["center"] > .8f){
+				possibleDescriptions.AddRange(goodCentering);
+			}
+			else if (p.scoringCriteria[0]["center"] < .6f)
+				possibleDescriptions.AddRange(badCentering);
+		}		
 		if (p.namesOfCreatures.Count == 0)
-			descript = noCreature.ToArray()[(int)(2*Random.value)];
-		else if (score > 50){
-			descript = goodDescriptions.ToArray()[(int)(2*Random.value)];	
+			possibleDescriptions = noCreature;
+		else if (score > 60){
+			possibleDescriptions.AddRange(goodDescriptions);	
 		}
-		else
-			descript = badDescriptions.ToArray()[(int)(2*Random.value)];
-		return descript;	
+		else if (score < 30){
+			possibleDescriptions.AddRange(badDescriptions);
+		}
+		
+		return possibleDescriptions[(int)(Random.value*(possibleDescriptions.Count-1))];
 	}
 }
 

@@ -44,7 +44,7 @@ public class CameraControl : MonoBehaviour {
 				//main.transform.rotation=other.transform.rotation;
 				//other.transform.eulerAngles = Vector3.zero;
 				other.transform.rotation=main.transform.rotation;	
-		
+				motion.Cameraing();
 		
 				//camMark.enabled=false;
 	}

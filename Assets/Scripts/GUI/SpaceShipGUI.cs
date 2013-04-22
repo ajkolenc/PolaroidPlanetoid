@@ -52,6 +52,7 @@ public class SpaceShipGUI : GUIScreen {
 		}
 		else{
 			Notification n = gameObject.AddComponent<Notification>();
+			n.isSal = true;
 			n.inSpaceShip = true;
 			n.content = "Welcome back, Captain.";
 			n.comeIn = true;
@@ -62,17 +63,18 @@ public class SpaceShipGUI : GUIScreen {
 	IEnumerator SalTutorial(){
 		Notification n = gameObject.AddComponent<Notification>();
 		n.bigNotification = true;
+		n.isSal = true;
 		n.skin = skin;
 		yield return StartCoroutine(n.FadeIn(.5f));
-		yield return StartCoroutine(SpeakLine("Greetings Captain. Technically I’m referred to as Small Astro-trans Lightship I. You may call me Sal, or Sally, if you prefer.", n));
-		yield return StartCoroutine(SpeakLine("We have landed  and are presently on the planet Noterra. Once you disembark you may view radar in the bottom right-hand corner to see where the alien wildlife lives.", n));
-		yield return StartCoroutine(SpeakLine("There is also a Field Guide that may aid in your exploration of this world. The more you explore, the more info you will collect in your guide about the aliens inhabiting this planet.", n));
-		yield return StartCoroutine(SpeakLine("When you come back to the ship, I'll appear...", n));
+		yield return StartCoroutine(SpeakLine("Greetings Captain. Technically I am referred to as Small Astro-trans Lightship I. You may also call me Sal.", n));
+		yield return StartCoroutine(SpeakLine("We have landed on the planet Notterra. Your compass, located in the bottom right-hand corner of your display, points to the nearest creature.", n));
+		yield return StartCoroutine(SpeakLine("You may also access your Field Guide by pressing the TAB key to aid in your exploration of this world.", n));
+		yield return StartCoroutine(SpeakLine("Notterra is dangerous at night; to ensure your safety, we will teleport you back to the ship when it gets dark. When you return I will appear...", n));
 		DimLightsGUI.LightsOn(true);
 		yield return StartCoroutine(n.Close());
 		n = gameObject.AddComponent<Notification>();
 		n.inSpaceShip = true;
-		n.content = "Over here. Remember, should you encounter any difficulties in navigating the rough alien landscape of Notterra, press the ESC key for command information. Good luck!";
+		n.content = "Over here. Should you encounter any troubles navigating the rough alien terrain, please press the ESC key for further information.";
 		n.comeIn = true;
 		n.skin = this.skin;
 	}
@@ -92,7 +94,7 @@ public class SpaceShipGUI : GUIScreen {
 			yield return 0;
 		}
 
-		if (experience >= nextLevelExperience){
+		if (experience > nextLevelExperience){
 			LevelUp();
 		}
 
@@ -105,13 +107,13 @@ public class SpaceShipGUI : GUIScreen {
 			rank = "Junior Photographer";
 		if (score > 4400)
 			rank = "Full-Time Photographer";
-		if (score > 10000)
+		if (score > 6500)
 			rank = "Photojournalist";
 		return rank;
 	}
 	
 	int GetExperience(string rank){
-		int experience = 0;
+		int experience = int.MaxValue;
 		switch (rank){
 		case "Junior Photographer":	
 			experience = 1100;
@@ -120,7 +122,10 @@ public class SpaceShipGUI : GUIScreen {
 			experience = 4400;
 			break;
 		case "Photojournalist":
-			experience = 10000;
+			experience = 6500;
+			break;
+		default:
+			experience = this.experience;
 			break;
 		}
 		return experience;
@@ -178,18 +183,53 @@ public class SpaceShipGUI : GUIScreen {
 		GUI.EndGroup();
 	}
 	
+	string getCyMessage(string rank){
+		string message = "";
+	 	switch (rank){
+		case "Photojournalist":
+			message = "I'm speechless! You're in a league of your own now, sport! I bet you'll put this jetpack to good use.";
+			break;
+		case "Full-Time Photographer":
+			message = "I'm impressed, you're really getting good at this! I managed to snag you these water shoes, they'll let you walk on water. Keep it up!";
+			break;
+		case "Junior Photographer":
+			message = "Wow, a junior photographer already; you'll go far, kid. Here, take this flashlight, it'll help you take better pictures at night.";
+			break;
+		}
+		return message;
+	}
+	
 	void LevelUp(){
 		currentRank = GetRank(experience);
 		DataHolder.currentRank = currentRank;
 		DataHolder.powerUps = GetPowerUps(currentRank);
 		items = DataHolder.powerUps.ToArray();
-		PopupGUI popup = this.gameObject.AddComponent<PopupGUI>();
-		popup.message = "You've been promoted to " +currentRank + "!";
-		popup.button = true;
-		popup.parent = this;
 		newRank = NextRank(newRank);
 		promotedLevelExperience = GetExperience(newRank);
+		StartCoroutine(PromotionMessage());
+//		PopupGUI popup = this.gameObject.AddComponent<PopupGUI>();
+//		popup.message = "You've been promoted to " +currentRank + "!";
+//		popup.button = true;
+//		popup.parent = this;
 //		MoveDown(new Rect(0,0,targetWidth, targetHeight), .7f);
+	}
+	
+	IEnumerator PromotionMessage(){
+		Notification n = gameObject.AddComponent<Notification>();
+		n.skin = this.skin;
+		n.isSal = false;
+		n.bigNotification = true;
+		n.typing = true;
+		n.Timeout(2f);
+		DimLightsGUI.LightsOn(false, 11);
+		yield return StartCoroutine(n.FadeIn());
+		yield return StartCoroutine(SpeakLine(getCyMessage(currentRank),n));
+		DimLightsGUI.LightsOn(true, 11);
+		if (currentRank == "Photojournalist"){
+			StartCoroutine(TransitionGUI.SwitchLevel("endscene"));
+		}
+		else
+			StartCoroutine(n.Close());
 	}
 	
 	List<string> GetPowerUps(string rank){

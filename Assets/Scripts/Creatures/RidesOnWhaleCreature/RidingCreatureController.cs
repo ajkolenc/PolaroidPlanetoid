@@ -3,7 +3,7 @@ using System.Collections;
 
 public class RidingCreatureController : BasicCreature {
 	
-	public GameObject wing1, wing2;
+	public GameObject body;
 	//Animation
 	public int curAnimState = -1;
 	
@@ -15,52 +15,91 @@ public class RidingCreatureController : BasicCreature {
 	private float normalTime = 4.0f;
 	private float flyTime = 2.0f;
 	
+	//Creature sound stuff
+	public AudioClip randomCreatureSound; 
+	public float timeBetweenSounds=5.0f; 
+	private float soundTimer;
+	
+	public float maxEnergy = 200;
+	private float energy = 0;
+	public float sleepLevel = 30;
+	private bool sleeping = false;
+	public SleepHandler sleepHandler;
 	
 	void Start(){
 		homePosition = transform.localPosition;
+		energy = maxEnergy;
 	}
 	
 	void Update(){
-		//Reset
-		if(curAnimState==-1){
-			curAnimState = Random.Range(0,2);
-			if(curAnimState==0){
-				timer=normalTime;
-			}
-			else if(curAnimState==1){
-				timer = flyTime;
-				wing1.animation.Play();
-				wing2.animation.Play();
-			}
+		
+		if(!sleeping){
 			
-		}
-		else if(curAnimState==SITTING){
 			
-			wing1.animation.Stop();
-			wing2.animation.Stop();
-			if(timer>=0){
-				timer-=Time.deltaTime*Random.Range(0.8f,1.0f);
+			if(soundTimer<timeBetweenSounds){
+				soundTimer+=Time.deltaTime*Random.Range(0.5f,1.5f);
 			}
 			else{
-				curAnimState=-1;
+				soundTimer=0;
+				if(randomCreatureSound!=null){
+					audio.PlayOneShot(randomCreatureSound);
+				}
 			}
-		}
-		else if(curAnimState==FLYING){
-			if(timer>=0){
-				timer-=Time.deltaTime*Random.Range(0.8f,1.0f);
+			
+			
+			//Reset
+			if(curAnimState==-1){
+				curAnimState = Random.Range(0,2);
+				if(curAnimState==0){
+					timer=normalTime;
+				}
+				else if(curAnimState==1){
+					timer = flyTime;
+					body.animation.Play();
+				}
 				
-				//Fly Higher!
-				transform.localPosition += new Vector3(0, Time.deltaTime*Random.Range(3,5), 0);
 			}
-			else{
-				if((transform.localPosition-homePosition).magnitude>0.1f){
-					transform.localPosition = Vector3.Lerp(transform.localPosition, homePosition, Time.deltaTime*Random.Range(3,5));
+			else if(curAnimState==SITTING){
+				energy-=Time.deltaTime;
+				
+				if(energy<sleepLevel){
+					sleeping=true;
+				}
+				
+				
+				if(timer>=0){
+					timer-=Time.deltaTime*Random.Range(0.8f,1.0f);
 				}
 				else{
 					curAnimState=-1;
 				}
 			}
-			
+			else if(curAnimState==FLYING){
+				energy-=Time.deltaTime*20;
+				if(timer>=0){
+					timer-=Time.deltaTime*Random.Range(0.8f,1.0f);
+					
+					//Fly Higher!
+					transform.localPosition += new Vector3(0, Time.deltaTime*Random.Range(3,5), 0);
+				}
+				else{
+					if((transform.localPosition-homePosition).magnitude>0.1f){
+						transform.localPosition = Vector3.Lerp(transform.localPosition, homePosition, Time.deltaTime*Random.Range(3,5));
+					}
+					else{
+						curAnimState=-1;
+					}
+				}
+				
+			}
 		}
+		else{
+			if(sleepHandler.Sleeping()){
+				sleeping=false;
+				energy = maxEnergy;
+			}
+		}
+		
+		
 	}
 }

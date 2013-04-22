@@ -3,7 +3,8 @@ using System.Collections;
 
 public class SpriteAnimation {
 	public Texture2D[] frames;
-	bool playing, repeat;
+	public bool playing, repeat;
+	bool frameSet = false;
 	Timer animationTimer;
 	float animationTime;
 	int framePointer;
@@ -25,13 +26,22 @@ public class SpriteAnimation {
 		framePointer++;
 	}
 	
+	public void SetFrame(int index){
+		frameSet = true;
+		framePointer = index;	
+	}
+	
+	public void Continue(){
+		frameSet = false;	
+	}
+	
 	public Texture2D PlayAnimation(float secondsPerFrame){
 		if (!playing){
 			framePointer = 0;
 			animationTimer = new Timer(secondsPerFrame);
 			playing = true;
 		}
-		else{
+		else if (!frameSet){
 			if (animationTimer.IsFinished()){
 				animationTimer.Restart();
 				framePointer+= 1;

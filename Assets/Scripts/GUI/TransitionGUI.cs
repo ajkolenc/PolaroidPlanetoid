@@ -23,10 +23,7 @@ public class TransitionGUI : GUIScreen {
 	
 	void Update(){
 		if (Input.GetKeyDown(KeyCode.H)){
-			useLetterBox(true);	
-		}
-		if (Input.GetKeyDown(KeyCode.G)){
-			useLetterBox(false);	
+			TransitionGUI.SwitchLevel("SceneTest-With Creatures");
 		}
 	}
 	

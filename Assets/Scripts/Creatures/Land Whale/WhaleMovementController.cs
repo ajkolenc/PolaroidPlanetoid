@@ -112,7 +112,7 @@ public class WhaleMovementController : MonoBehaviour {
 				}
 				
 				RaycastHit hit;
-				if(Physics.Raycast(transform.position+transform.forward, difference, out hit, difference.magnitude*speed*Time.deltaTime)){
+				if((difference.magnitude*speed*Time.deltaTime)>0 && Physics.Raycast(transform.position+transform.forward, difference, out hit, difference.magnitude*speed*Time.deltaTime)){
 					//Don't go there
 					//Stuck is the way to pass messages up to the place that's calling us
 					stuck=true;
